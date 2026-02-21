@@ -7,9 +7,10 @@ COPY backend/ .
 RUN go mod init github.com/ry-ops/eagle-scout-extension && \
     CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /backend .
 
-# Stage 2: backend runtime image (needs docker CLI + alpine to run the binary)
+# Stage 2: backend runtime image (needs docker CLI + scout plugin)
 FROM docker:29.2.1-cli AS backend
 RUN apk upgrade --no-cache
+COPY --from=docker/scout-cli:1.19.2 /docker-scout /usr/libexec/docker/cli-plugins/docker-scout
 COPY --from=builder /backend /backend
 CMD ["/backend"]
 

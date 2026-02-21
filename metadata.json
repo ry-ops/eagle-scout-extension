@@ -12,9 +12,7 @@
       "src": "index.html"
     }
   },
-  "backend": {
-    "compose": {
-      "file": "compose.yaml"
-    }
+  "vm": {
+    "composefile": "compose.yaml"
   }
 }

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <circle cx="32" cy="32" r="32" fill="#0d1117"/>
+  <path d="M32 10 C18 10 10 22 10 32 C10 44 20 54 32 54 C44 54 54 44 54 32 C54 22 46 10 32 10Z" fill="#1f6feb" opacity="0.15"/>
+  <!-- Eagle body -->
+  <path d="M32 18 L20 38 L32 34 L44 38 Z" fill="#58a6ff"/>
+  <path d="M32 34 L26 46 L32 42 L38 46 Z" fill="#1f6feb"/>
+  <!-- Eye -->
+  <circle cx="32" cy="26" r="3" fill="#f0f6fc"/>
+  <circle cx="32" cy="26" r="1.5" fill="#0d1117"/>
+</svg>

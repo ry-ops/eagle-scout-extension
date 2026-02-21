@@ -1,0 +1,20 @@
+{
+  "schema": "0.0.1",
+  "vendor": "ry-ops",
+  "version": "0.1.0",
+  "title": "Eagle Scout",
+  "description": "Docker Scout security scanning dashboard",
+  "icon": "eagle-scout.svg",
+  "ui": {
+    "dashboard-tab": {
+      "title": "Eagle Scout",
+      "root": "/ui",
+      "src": "index.html"
+    }
+  },
+  "backend": {
+    "compose": {
+      "file": "compose.yaml"
+    }
+  }
+}

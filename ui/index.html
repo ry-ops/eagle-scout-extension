@@ -207,6 +207,23 @@
     .sev-btn.high.active { background: #d29922; }
     .sev-btn.medium.active { background: #e3b341; color: #0d1117; }
     .sev-btn.low.active { background: #388bfd; }
+
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #1c1a14;
+      border: 1px solid #d29922;
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #e3b341;
+      line-height: 1.5;
+    }
+    .alert .alert-icon { font-size: 18px; flex-shrink: 0; }
+    .alert .alert-body { color: #c9d1d9; }
+    .alert .alert-body strong { color: #e3b341; display: block; margin-bottom: 4px; }
+    .alert a { color: #58a6ff; }
   </style>
 </head>
 <body>
@@ -286,9 +303,9 @@
 
     try {
       const res = await api(`/scan?image=${encodeURIComponent(image)}`);
-      document.getElementById('qv-output').textContent  = res.quickview       || res.error || 'No output';
-      document.getElementById('cve-output').textContent = res.cves            || res.error || 'No output';
-      document.getElementById('rec-output').textContent = res.recommendations || res.error || 'No output';
+      document.getElementById('qv-output').textContent  = res.quickview || res.error || 'No output';
+      document.getElementById('cve-output').textContent = res.cves      || res.error || 'No output';
+      setRecommendations(res.recommendations || res.error || 'No output', image);
       setStatus(`Scanned: ${image}`);
     } catch (e) {
       const msg = String(e);
@@ -298,6 +315,30 @@
       setStatus('Error');
     }
     document.getElementById('scanBtn').disabled = false;
+  }
+
+  function setRecommendations(output, image) {
+    const el = document.getElementById('rec-output');
+    const noBase = output.includes('image has no base image') ||
+                   output.includes('Could not display recommendations');
+    if (noBase) {
+      el.innerHTML = `
+        <div class="alert">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-body">
+            <strong>No provenance attestations found</strong>
+            This image was not built with provenance attestations, so Docker Scout
+            cannot identify its base image or generate recommendations.<br/><br/>
+            To fix this, rebuild with:
+            <code>docker buildx build --provenance=max ...</code><br/><br/>
+            <a href="https://docs.docker.com/build/attestations/slsa-provenance/" target="_blank">
+              Learn more about provenance attestations →
+            </a>
+          </div>
+        </div>`;
+    } else {
+      el.textContent = output;
+    }
   }
 
   function switchTab(name) {

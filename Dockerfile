@@ -24,4 +24,5 @@ LABEL org.opencontainers.image.title="Eagle Scout" \
 COPY --from=builder /backend /backend
 COPY metadata.json /metadata.json
 COPY compose.yaml /compose.yaml
+COPY eagle-scout.svg /eagle-scout.svg
 COPY ui/ /ui

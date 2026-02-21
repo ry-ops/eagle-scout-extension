@@ -13,6 +13,9 @@
     }
   },
   "vm": {
-    "composefile": "compose.yaml"
+    "composefile": "compose.yaml",
+    "exposes": {
+      "port": 8888
+    }
   }
 }

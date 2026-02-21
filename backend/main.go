@@ -4,33 +4,35 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
-	"os"
 	"os/exec"
 	"strings"
 )
 
-const socketPath = "/run/guest-services/eagle-scout.sock"
+const port = ":8888"
+
+func cors(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next(w, r)
+	}
+}
 
 func main() {
-	os.Remove(socketPath)
-	os.MkdirAll("/run/guest-services", 0755)
-
-	ln, err := net.Listen("unix", socketPath)
-	if err != nil {
-		log.Fatalf("failed to listen on socket: %v", err)
-	}
-	defer ln.Close()
-
 	mux := http.NewServeMux()
-	mux.HandleFunc("/quickview", handleQuickview)
-	mux.HandleFunc("/cves", handleCVEs)
-	mux.HandleFunc("/recommendations", handleRecommendations)
-	mux.HandleFunc("/images", handleImages)
+	mux.HandleFunc("/quickview", cors(handleQuickview))
+	mux.HandleFunc("/cves", cors(handleCVEs))
+	mux.HandleFunc("/recommendations", cors(handleRecommendations))
+	mux.HandleFunc("/images", cors(handleImages))
 
-	log.Println("eagle-scout backend listening on", socketPath)
-	log.Fatal(http.Serve(ln, mux))
+	log.Println("eagle-scout backend listening on", port)
+	log.Fatal(http.ListenAndServe(port, mux))
 }
 
 func handleImages(w http.ResponseWriter, r *http.Request) {

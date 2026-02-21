@@ -264,16 +264,11 @@
 </div>
 
 <script>
-  // Docker Desktop extension SDK communication
-  const ddClient = window.ddClient;
+  const API = 'http://localhost:8888';
   let activeSeverity = null;
 
   function api(path) {
-    if (ddClient) {
-      return ddClient.extension.vm.service.get(path);
-    }
-    // Dev fallback: direct HTTP (won't work in production extension)
-    return fetch('http://localhost:8080' + path).then(r => r.json());
+    return fetch(API + path).then(r => r.json());
   }
 
   async function loadImages() {

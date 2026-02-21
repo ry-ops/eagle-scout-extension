@@ -224,6 +224,7 @@
     .alert .alert-body { color: #c9d1d9; }
     .alert .alert-body strong { color: #e3b341; display: block; margin-bottom: 4px; }
     .alert a { color: #58a6ff; }
+    .alert-link { color: #58a6ff; cursor: pointer; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -322,23 +323,15 @@
     const noBase = output.includes('image has no base image') ||
                    output.includes('Could not display recommendations');
     if (noBase) {
-      el.innerHTML = `
-        <div class="alert">
-          <span class="alert-icon">⚠️</span>
-          <div class="alert-body">
-            <strong>No provenance attestations found</strong>
-            This image was not built with provenance attestations, so Docker Scout
-            cannot identify its base image or generate recommendations.<br/><br/>
-            To fix this, rebuild with:
-            <code>docker buildx build --provenance=max ...</code><br/><br/>
-            <a href="https://docs.docker.com/build/attestations/slsa-provenance/" target="_blank">
-              Learn more about provenance attestations →
-            </a>
-          </div>
-        </div>`;
+      const shortName = image.split('/').pop();
+      el.innerHTML = `<div class="alert"><span class="alert-icon">⚠️</span><div class="alert-body"><strong>Base image unknown — recommendations unavailable</strong>Docker Scout needs to know what base image <em>${shortName}</em> was built from in order to suggest updates. This image was built without that information included.<br><br>If you own this image, rebuild it using GitHub Actions or Docker Buildx with provenance enabled — this records the build history so Scout can track the base image automatically. Images built and pushed through the ry-ops CI pipeline already do this.<br><br>Third-party images like Watchtower are outside your control — check the vendor's release notes for updates instead.<br><br><span class="alert-link" onclick="openDocs()">How to enable provenance in your builds →</span></div></div>`;
     } else {
       el.textContent = output;
     }
+  }
+
+  function openDocs() {
+    window.open('https://docs.docker.com/build/metadata/attestations/slsa-provenance/', '_blank');
   }
 
   function switchTab(name) {

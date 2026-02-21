@@ -1,13 +1,19 @@
 # eagle-scout-extension — Docker Desktop Extension
 
-# Stage 1: build backend
+# Stage 1: build backend binary
 FROM golang:1.25.7-alpine AS builder
 WORKDIR /app
 COPY backend/ .
 RUN go mod init github.com/ry-ops/eagle-scout-extension && \
     CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /backend .
 
-# Stage 2: extension image
+# Stage 2: backend runtime image (needs docker CLI + alpine to run the binary)
+FROM docker:29.2.1-cli AS backend
+RUN apk upgrade --no-cache
+COPY --from=builder /backend /backend
+CMD ["/backend"]
+
+# Stage 3: extension image (scratch — just metadata, UI, and compose ref)
 FROM scratch
 
 LABEL org.opencontainers.image.title="Eagle Scout" \
@@ -21,7 +27,6 @@ LABEL org.opencontainers.image.title="Eagle Scout" \
       com.docker.extension.publisher-url="https://github.com/ry-ops" \
       com.docker.extension.categories="security"
 
-COPY --from=builder /backend /backend
 COPY metadata.json /metadata.json
 COPY compose.yaml /compose.yaml
 COPY eagle-scout.svg /eagle-scout.svg

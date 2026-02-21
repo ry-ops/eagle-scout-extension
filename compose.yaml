@@ -1,5 +1,5 @@
 services:
   backend:
-    image: ryops/eagle-scout-extension-backend:latest
+    image: ryops/eagle-scout-extension:backend
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

@@ -219,6 +219,8 @@
 <div class="toolbar">
   <select id="imageSelect"><option value="">Loading images...</option></select>
   <button id="refreshImages" class="btn-secondary" onclick="loadImages()">Refresh</button>
+  <button id="scanBtn" onclick="runScan()">Scan</button>
+  <span class="status" id="scan-status"></span>
 </div>
 
 <div class="tabs">
@@ -229,43 +231,21 @@
 
 <!-- Quickview -->
 <div id="tab-quickview" class="panel active">
-  <div class="status" id="qv-status"></div>
   <div class="output-box" id="qv-output">Select an image and click Scan.</div>
-  <br/>
-  <button onclick="runQuickview()" id="qv-btn">Scan</button>
 </div>
 
 <!-- CVEs -->
 <div id="tab-cves" class="panel">
-  <div class="filter-row">
-    <label>Filter:</label>
-    <div class="severity-toggle">
-      <button class="sev-btn critical" onclick="toggleSev(this,'critical')">Critical</button>
-      <button class="sev-btn high" onclick="toggleSev(this,'high')">High</button>
-      <button class="sev-btn medium" onclick="toggleSev(this,'medium')">Medium</button>
-      <button class="sev-btn low" onclick="toggleSev(this,'low')">Low</button>
-    </div>
-    <label style="margin-left:12px">
-      <input type="checkbox" id="onlyFixed" /> Fixable only
-    </label>
-  </div>
-  <div class="status" id="cve-status"></div>
   <div class="output-box" id="cve-output">Select an image and click Scan.</div>
-  <br/>
-  <button onclick="runCVEs()" id="cve-btn">Scan</button>
 </div>
 
 <!-- Recommendations -->
 <div id="tab-recommendations" class="panel">
-  <div class="status" id="rec-status"></div>
   <div class="output-box" id="rec-output">Select an image and click Scan.</div>
-  <br/>
-  <button onclick="runRecommendations()" id="rec-btn">Scan</button>
 </div>
 
 <script>
   const API = 'http://localhost:8888';
-  let activeSeverity = null;
 
   function api(path) {
     return fetch(API + path).then(r => r.json());
@@ -289,83 +269,43 @@
     }
   }
 
-  function selectedImage() {
-    return document.getElementById('imageSelect').value;
-  }
-
-  function setStatus(id, msg, loading) {
-    const el = document.getElementById(id);
+  function setStatus(msg, loading) {
+    const el = document.getElementById('scan-status');
     el.innerHTML = loading ? `<span class="spinner"></span>${msg}` : msg;
   }
 
-  async function runQuickview() {
-    const image = selectedImage();
+  async function runScan() {
+    const image = document.getElementById('imageSelect').value;
     if (!image) return alert('Select an image first.');
-    setStatus('qv-status', `Scanning ${image}...`, true);
-    document.getElementById('qv-btn').disabled = true;
-    try {
-      const res = await api(`/quickview?image=${encodeURIComponent(image)}`);
-      document.getElementById('qv-output').textContent = res.output || res.error;
-      setStatus('qv-status', `Scanned: ${image}`);
-    } catch (e) {
-      document.getElementById('qv-output').textContent = String(e);
-      setStatus('qv-status', 'Error');
-    }
-    document.getElementById('qv-btn').disabled = false;
-  }
 
-  async function runCVEs() {
-    const image = selectedImage();
-    if (!image) return alert('Select an image first.');
-    let path = `/cves?image=${encodeURIComponent(image)}`;
-    if (document.getElementById('onlyFixed').checked) path += '&only_fixed=true';
-    if (activeSeverity) path += `&severity=${activeSeverity}`;
-    setStatus('cve-status', `Scanning ${image}...`, true);
-    document.getElementById('cve-btn').disabled = true;
-    try {
-      const res = await api(path);
-      document.getElementById('cve-output').textContent = res.output || res.error;
-      setStatus('cve-status', `Scanned: ${image}`);
-    } catch (e) {
-      document.getElementById('cve-output').textContent = String(e);
-      setStatus('cve-status', 'Error');
-    }
-    document.getElementById('cve-btn').disabled = false;
-  }
+    document.getElementById('scanBtn').disabled = true;
+    setStatus(`Scanning ${image}...`, true);
+    document.getElementById('qv-output').textContent = 'Scanning...';
+    document.getElementById('cve-output').textContent = 'Scanning...';
+    document.getElementById('rec-output').textContent = 'Scanning...';
 
-  async function runRecommendations() {
-    const image = selectedImage();
-    if (!image) return alert('Select an image first.');
-    setStatus('rec-status', `Fetching recommendations for ${image}...`, true);
-    document.getElementById('rec-btn').disabled = true;
     try {
-      const res = await api(`/recommendations?image=${encodeURIComponent(image)}`);
-      document.getElementById('rec-output').textContent = res.output || res.error;
-      setStatus('rec-status', `Done: ${image}`);
+      const res = await api(`/scan?image=${encodeURIComponent(image)}`);
+      document.getElementById('qv-output').textContent  = res.quickview       || res.error || 'No output';
+      document.getElementById('cve-output').textContent = res.cves            || res.error || 'No output';
+      document.getElementById('rec-output').textContent = res.recommendations || res.error || 'No output';
+      setStatus(`Scanned: ${image}`);
     } catch (e) {
-      document.getElementById('rec-output').textContent = String(e);
-      setStatus('rec-status', 'Error');
+      const msg = String(e);
+      document.getElementById('qv-output').textContent  = msg;
+      document.getElementById('cve-output').textContent = msg;
+      document.getElementById('rec-output').textContent = msg;
+      setStatus('Error');
     }
-    document.getElementById('rec-btn').disabled = false;
+    document.getElementById('scanBtn').disabled = false;
   }
 
   function switchTab(name) {
-    document.querySelectorAll('.tab').forEach((t, i) => {
+    document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('active', t.textContent.toLowerCase().replace(/\s/g,'') === name);
     });
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-  }
-
-  function toggleSev(btn, sev) {
-    if (activeSeverity === sev) {
-      activeSeverity = null;
-      btn.classList.remove('active');
-    } else {
-      document.querySelectorAll('.sev-btn').forEach(b => b.classList.remove('active'));
-      activeSeverity = sev;
-      btn.classList.add('active');
-    }
   }
 
   loadImages();

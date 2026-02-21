@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 const port = ":8888"
@@ -26,9 +27,7 @@ func cors(next http.HandlerFunc) http.HandlerFunc {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/quickview", cors(handleQuickview))
-	mux.HandleFunc("/cves", cors(handleCVEs))
-	mux.HandleFunc("/recommendations", cors(handleRecommendations))
+	mux.HandleFunc("/scan", cors(handleScan))
 	mux.HandleFunc("/images", cors(handleImages))
 
 	log.Println("eagle-scout backend listening on", port)
@@ -56,56 +55,47 @@ func handleImages(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, images)
 }
 
-func handleQuickview(w http.ResponseWriter, r *http.Request) {
+func handleScan(w http.ResponseWriter, r *http.Request) {
 	image := r.URL.Query().Get("image")
 	if image == "" {
 		http.Error(w, "image parameter required", http.StatusBadRequest)
 		return
 	}
 
-	out, err := exec.Command("docker", "scout", "quickview", image).CombinedOutput()
+	type result struct {
+		output string
+		err    error
+	}
+
+	var (
+		wg              sync.WaitGroup
+		qv, cves, recs result
+	)
+
+	wg.Add(3)
+	go func() {
+		defer wg.Done()
+		out, err := exec.Command("docker", "scout", "quickview", image).CombinedOutput()
+		qv = result{string(out), err}
+	}()
+	go func() {
+		defer wg.Done()
+		out, err := exec.Command("docker", "scout", "cves", image).CombinedOutput()
+		cves = result{string(out), err}
+	}()
+	go func() {
+		defer wg.Done()
+		out, err := exec.Command("docker", "scout", "recommendations", image).CombinedOutput()
+		recs = result{string(out), err}
+	}()
+	wg.Wait()
+
 	writeJSON(w, map[string]string{
-		"image":  image,
-		"output": string(out),
-		"error":  errStr(err),
-	})
-}
-
-func handleCVEs(w http.ResponseWriter, r *http.Request) {
-	image := r.URL.Query().Get("image")
-	if image == "" {
-		http.Error(w, "image parameter required", http.StatusBadRequest)
-		return
-	}
-
-	args := []string{"scout", "cves", image}
-	if r.URL.Query().Get("only_fixed") == "true" {
-		args = append(args, "--only-fixed")
-	}
-	if sev := r.URL.Query().Get("severity"); sev != "" {
-		args = append(args, "--only-severity", sev)
-	}
-
-	out, err := exec.Command("docker", args...).CombinedOutput()
-	writeJSON(w, map[string]string{
-		"image":  image,
-		"output": string(out),
-		"error":  errStr(err),
-	})
-}
-
-func handleRecommendations(w http.ResponseWriter, r *http.Request) {
-	image := r.URL.Query().Get("image")
-	if image == "" {
-		http.Error(w, "image parameter required", http.StatusBadRequest)
-		return
-	}
-
-	out, err := exec.Command("docker", "scout", "recommendations", image).CombinedOutput()
-	writeJSON(w, map[string]string{
-		"image":  image,
-		"output": string(out),
-		"error":  errStr(err),
+		"image":           image,
+		"quickview":       qv.output,
+		"cves":            cves.output,
+		"recommendations": recs.output,
+		"error":           errStr(qv.err),
 	})
 }
 

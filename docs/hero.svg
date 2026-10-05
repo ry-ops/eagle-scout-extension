@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" role="img" aria-labelledby="t d">
+  <title id="t">eagle-scout-extension: Docker Scout scanning inside Docker Desktop</title>
+  <desc id="d">A Docker Desktop extension that adds an Eagle Scout tab showing a Docker Scout security dashboard — local images listed with their worst vulnerability severity. The visual companion to the eagle-scout MCP server.</desc>
+  <defs><linearGradient id="title" x1="0" x2="1"><stop offset="0" stop-color="#2496ed"/><stop offset=".5" stop-color="#00add8"/><stop offset="1" stop-color="#3ddc84"/></linearGradient></defs>
+  <style>
+    text { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; fill:#e6ebf5; }
+    .muted { fill:#8b96ad; } .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    @keyframes r0 { 0%,12.50% { opacity:0; transform:translateX(-6px); } 17.50%,95.00% { opacity:1; transform:translateX(0); } 100% { opacity:0; } } .r0 { animation:r0 8.0s infinite; }
+    @keyframes r1 { 0%,17.50% { opacity:0; transform:translateX(-6px); } 22.50%,95.00% { opacity:1; transform:translateX(0); } 100% { opacity:0; } } .r1 { animation:r1 8.0s infinite; }
+    @keyframes r2 { 0%,22.50% { opacity:0; transform:translateX(-6px); } 27.50%,95.00% { opacity:1; transform:translateX(0); } 100% { opacity:0; } } .r2 { animation:r2 8.0s infinite; }
+    @keyframes r3 { 0%,27.50% { opacity:0; transform:translateX(-6px); } 32.50%,95.00% { opacity:1; transform:translateX(0); } 100% { opacity:0; } } .r3 { animation:r3 8.0s infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation:none !important; } }
+  </style>
+  <rect width="960" height="420" rx="20" fill="#0f1420"/>
+  <text x="40" y="56" font-size="30" font-weight="800" style="fill:url(#title)">eagle-scout-extension</text>
+  <text x="42" y="84" font-size="15" class="muted">Docker Scout scanning, as a tab inside Docker Desktop.</text>
+  <rect x="40" y="110" width="880" height="280" rx="12" fill="#0b0f18" stroke="#2c3750"/>
+  <rect x="40" y="110" width="880" height="30" rx="12" fill="#1a2233"/><circle cx="60" cy="125" r="5" fill="#ff5f57"/><circle cx="78" cy="125" r="5" fill="#febc2e"/><circle cx="96" cy="125" r="5" fill="#28c840"/>
+  <text x="480" y="129" text-anchor="middle" font-size="11" class="muted">Docker Desktop</text>
+  <rect x="40" y="140" width="160" height="250" fill="#111825"/>
+  <text x="60" y="172" font-size="11.5" class="muted">Containers</text><text x="60" y="198" font-size="11.5" class="muted">Images</text><text x="60" y="224" font-size="11.5" class="muted">Volumes</text>
+  <rect x="48" y="244" width="144" height="26" rx="6" fill="#2496ed" fill-opacity=".15"/><text x="60" y="262" font-size="11.5" font-weight="700" style="fill:#7fc4ff">🦅 Eagle Scout</text>
+  <text x="440" y="176" font-size="15" font-weight="700">Image security</text>
+  <text x="870" y="176" text-anchor="end" font-size="10.5" class="mono muted">backend :8888</text>
+  <g class="r0"><rect x="440" y="200" width="430" height="34" rx="8" fill="#0b0f18" stroke="#1d2a1f" stroke-opacity=".5"/><circle cx="462" cy="217" r="6" fill="#2496ed"/><text x="480" y="222" font-size="12.5" class="mono">nginx:latest</text><rect x="690" y="202" width="70" height="22" rx="6" fill="#ff5c6e" fill-opacity=".18" stroke="#ff5c6e"/><text x="725" y="217" text-anchor="middle" font-size="11" font-weight="700" style="fill:#ff9ba3">2 crit</text><text x="792" y="222" font-size="11" class="muted">12 high</text></g><g class="r1"><rect x="440" y="244" width="430" height="34" rx="8" fill="#0b0f18" stroke="#1d2a1f" stroke-opacity=".5"/><circle cx="462" cy="261" r="6" fill="#2496ed"/><text x="480" y="266" font-size="12.5" class="mono">my-app:1.2</text><rect x="690" y="246" width="70" height="22" rx="6" fill="#ffb02e" fill-opacity=".18" stroke="#ffb02e"/><text x="725" y="261" text-anchor="middle" font-size="11" font-weight="700" style="fill:#ffd88a">3 high</text><text x="792" y="266" font-size="11" class="muted">0 crit</text></g><g class="r2"><rect x="440" y="288" width="430" height="34" rx="8" fill="#0b0f18" stroke="#1d2a1f" stroke-opacity=".5"/><circle cx="462" cy="305" r="6" fill="#2496ed"/><text x="480" y="310" font-size="12.5" class="mono">redis:7</text><rect x="690" y="290" width="70" height="22" rx="6" fill="#3ddc84" fill-opacity=".15" stroke="#3ddc84"/><text x="725" y="305" text-anchor="middle" font-size="11" font-weight="700" style="fill:#9ff0c4">clean</text></g><g class="r3"><rect x="440" y="332" width="430" height="34" rx="8" fill="#0b0f18" stroke="#1d2a1f" stroke-opacity=".5"/><circle cx="462" cy="349" r="6" fill="#2496ed"/><text x="480" y="354" font-size="12.5" class="mono">postgres:15</text><rect x="690" y="334" width="70" height="22" rx="6" fill="#ff5c6e" fill-opacity=".18" stroke="#ff5c6e"/><text x="725" y="349" text-anchor="middle" font-size="11" font-weight="700" style="fill:#ff9ba3">1 crit</text><text x="792" y="354" font-size="11" class="muted">6 high</text></g>
+</svg>

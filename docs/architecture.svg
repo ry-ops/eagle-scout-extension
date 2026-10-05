@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" role="img" aria-labelledby="t d">
+  <title id="t">How the extension is built</title>
+  <desc id="d">The dashboard UI tab talks to a Go backend on port 8888, which calls Docker Scout. metadata.json declares the extension and its tab; compose.yaml runs the backend inside the extension VM.</desc>
+  <style>
+    text { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; fill:#e6ebf5; }
+    .muted { fill:#8b96ad; } .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    @keyframes f1 { 0%,8.89% { offset-distance:0%; opacity:0 } 10.00% {opacity:1} 21.11% { offset-distance:100%; opacity:1 } 23.33%,100% {opacity:0} } .f1 { animation:f1 9.0s infinite; offset-path: path('M300 200 L 400 200'); }
+    @keyframes f2 { 0%,24.44% { offset-distance:0%; opacity:0 } 25.56% {opacity:1} 36.67% { offset-distance:100%; opacity:1 } 38.89%,100% {opacity:0} } .f2 { animation:f2 9.0s infinite; offset-path: path('M620 200 L 720 200'); }
+    @media (prefers-reduced-motion: reduce) { * { animation:none !important; } }
+  </style>
+  <rect width="960" height="400" rx="20" fill="#0f1420"/>
+  <text x="40" y="54" font-size="27" font-weight="800">How it's built</text>
+  <text x="40" y="80" font-size="14" class="muted">A UI tab, a small Go backend, and Docker Scout — packaged as one Docker Desktop extension.</text>
+
+  <rect x="40" y="160" width="260" height="80" rx="12" fill="#2496ed" fill-opacity=".1" stroke="#2496ed" stroke-width="2"/>
+  <text x="170" y="192" text-anchor="middle" font-size="15" font-weight="700">UI tab</text><text x="170" y="214" text-anchor="middle" font-size="11" class="mono muted">ui/index.html</text>
+  <rect x="400" y="160" width="220" height="80" rx="12" fill="#00add8" fill-opacity=".1" stroke="#00add8" stroke-width="2"/>
+  <text x="510" y="192" text-anchor="middle" font-size="15" font-weight="700">Go backend</text><text x="510" y="214" text-anchor="middle" font-size="11" class="mono muted">backend/main.go · :8888</text>
+  <rect x="720" y="160" width="200" height="80" rx="12" fill="#161d2b" stroke="#2c3750" stroke-width="2"/>
+  <text x="820" y="192" text-anchor="middle" font-size="15" font-weight="700">Docker Scout</text><text x="820" y="214" text-anchor="middle" font-size="11" class="muted">scan · SBOM · CVEs</text>
+  <line x1="300" y1="200" x2="400" y2="200" stroke="#2c3750" stroke-width="2" stroke-dasharray="3 5"/>
+  <line x1="620" y1="200" x2="720" y2="200" stroke="#2c3750" stroke-width="2" stroke-dasharray="3 5"/>
+  <circle class="f1" r="5" fill="#2496ed"/><circle class="f2" r="5" fill="#00add8"/>
+  <text x="40" y="285" font-size="11" font-weight="700" class="muted" letter-spacing=".08em">PACKAGING</text>
+  <rect x="40" y="300" width="500" height="34" rx="8" fill="#ffb02e" fill-opacity=".08" stroke="#ffb02e" stroke-opacity=".5"/><text x="58" y="322" font-size="12.5" class="mono" style="fill:#ffb02e">metadata.json</text><text x="524" y="322" text-anchor="end" font-size="11" class="muted">title, icon, tab, compose</text><rect x="40" y="344" width="500" height="34" rx="8" fill="#3ddc84" fill-opacity=".08" stroke="#3ddc84" stroke-opacity=".5"/><text x="58" y="366" font-size="12.5" class="mono" style="fill:#3ddc84">compose.yaml</text><text x="524" y="366" text-anchor="end" font-size="11" class="muted">runs the backend in the extension VM</text>
+  <text x="560" y="322" font-size="12" class="muted">Build and install:</text>
+  <text x="560" y="344" font-size="11.5" class="mono muted">docker build -t ryops/eagle-scout-extension:dev .</text>
+  <text x="560" y="364" font-size="11.5" class="mono muted">docker extension install …:dev</text>
+</svg>
